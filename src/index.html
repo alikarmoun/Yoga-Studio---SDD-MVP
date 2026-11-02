@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoga Studio · Gestión</title>
+<style>
+:root{--sage:#78917D;--deep:#30483B;--cream:#F7F5EF;--sand:#E7DED0;--terra:#C98268}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--deep);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:26px max(24px,calc((100% - 1100px)/2));background:#fff;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e9e5dd}
+.brand{font-weight:750;font-size:20px;letter-spacing:-.5px}.brand span{color:var(--sage)}.tag{font-size:12px;background:#edf1ec;padding:7px 11px;border-radius:20px}
+main{max-width:1100px;margin:32px auto;padding:0 22px}.intro{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:24px}.intro h1{font-size:30px;margin:0 0 7px;letter-spacing:-1px}.muted{color:#758078}.btn{border:0;border-radius:11px;background:var(--deep);color:white;padding:12px 16px;font-weight:650;cursor:pointer}.btn.secondary{background:#e7ede7;color:var(--deep)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}.stat,.panel{background:white;border:1px solid #e9e5dd;border-radius:17px;padding:20px}.stat small{color:#778178}.stat strong{display:block;font-size:27px;margin-top:8px}
+.layout{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}.panel h2{font-size:18px;margin:0 0 16px}.session{padding:15px;border:1px solid #eee9e1;border-radius:13px;margin-bottom:11px;display:flex;justify-content:space-between;gap:14px;align-items:center}.session:last-child{margin-bottom:0}.session b{display:block;margin-bottom:5px}.pill{font-size:12px;padding:5px 9px;border-radius:20px;background:#edf1ec;white-space:nowrap}.pill.full{background:#f8e8e1;color:#9a4e36}.pill.wait{background:#f3ecdf;color:#7b6241}.session button{margin-top:9px;font-size:12px;padding:8px 10px;border-radius:8px;border:0;background:#e7ede7;color:var(--deep);cursor:pointer}
+.bonus{background:#f4f6f1;border-radius:14px;padding:17px;margin-bottom:12px}.bonus-head{display:flex;justify-content:space-between;align-items:center}.progress{height:8px;background:#dce3da;border-radius:10px;margin:13px 0 8px;overflow:hidden}.progress div{height:100%;background:var(--sage);width:70%}.small{font-size:13px;color:#768078}.waitlist{margin-top:15px;padding-top:15px;border-top:1px solid #eee9e1}.waitlist li{margin:8px 0;color:#68736b}.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--deep);color:white;padding:12px 18px;border-radius:12px;display:none;box-shadow:0 8px 25px #0002}
+@media(max-width:760px){.intro{align-items:start;flex-direction:column}.stats{grid-template-columns:1fr}.layout{grid-template-columns:1fr}header{padding:20px}.intro h1{font-size:26px}}
+</style></head><body>
+<header><div class="brand">alma<span>·</span> yoga</div><div class="tag">Panel de Andrea</div></header>
+<main><div class="intro"><div><h1>Hola, Andrea 🌿</h1><div class="muted">Tu estudio, en equilibrio.</div></div><button class="btn" onclick="toast('Demo: nueva sesión')">＋ Nueva clase</button></div>
+<div class="stats"><div class="stat"><small>Clases de hoy</small><strong>3</strong></div><div class="stat"><small>Reservas confirmadas</small><strong id="confirmed">12 / 24</strong></div><div class="stat"><small>En lista de espera</small><strong id="waitCount">2</strong></div></div>
+<div class="layout"><section class="panel"><h2>Próximas sesiones</h2>
+<div class="session"><div><b>Yoga Flow · 18:00</b><span class="small">Laura · Hoy · Sala principal</span><br><button onclick="book('flow')">Añadir reserva demo</button></div><span class="pill" id="flowStatus">10 / 12 plazas</span></div>
+<div class="session"><div><b>Hatha Yoga · 19:15</b><span class="small">Marta · Hoy · Sala principal</span><br><button onclick="book('hatha')">Añadir reserva demo</button></div><span class="pill full">Completa</span></div>
+<div class="session"><div><b>Yoga suave · 20:30</b><span class="small">Laura · Hoy · Sala principal</span><br><button onclick="toast('Sesión abierta (demo)')">Ver sesión</button></div><span class="pill">8 / 12 plazas</span></div>
+</section>
+<section class="panel"><h2>Bonos de alumnas</h2>
+<div class="bonus"><div class="bonus-head"><b>Lucía Fernández</b><span class="pill">Activo</span></div><div class="progress"><div style="width:70%"></div></div><div class="small">7 de 10 clases disponibles · 3 consumidas</div><button class="btn secondary" style="margin-top:12px" onclick="attend()">Registrar asistencia</button></div>
+<div class="bonus"><div class="bonus-head"><b>Clara Martín</b><span class="pill">Activo</span></div><div class="progress"><div style="width:40%"></div></div><div class="small">4 de 10 clases disponibles · 6 consumidas</div></div>
+<div class="waitlist"><b>Lista de espera · Hatha 19:15</b><ol id="waitNames"><li>Eva Sánchez</li><li>Paula Ruiz</li></ol><div class="small">Orden de entrada · promoción al liberar plaza</div></div>
+</section></div></main><div class="toast" id="toast"></div>
+<script>
+let flow=10, wait=2, saldo=7, attended=false;
+function toast(t){let x=document.getElementById('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',2400)}
+function book(k){if(k==='flow'&&flow<12){flow++;document.getElementById('flowStatus').textContent=flow+' / 12 plazas';document.getElementById('confirmed').textContent=flow+' / 24';toast('Reserva demo confirmada')}else{wait++;document.getElementById('waitCount').textContent=wait;toast('Sesión completa: añadida a lista de espera (demo)')}}
+function attend(){if(attended){toast('La asistencia ya estaba registrada');return}attended=true;saldo--;document.querySelector('.bonus .small').textContent=saldo+' de 10 clases disponibles · 3 consumidas';document.querySelector('.bonus .progress div').style.width=(saldo*10)+'%';toast('Asistencia registrada: 1 clase descontada')}
+</script></body></html>
